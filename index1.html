@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Online Grocery Store</title>
+<style>
+  *{box-sizing:border-box;}
+  body{
+    font-family: Arial, sans-serif;
+    background:#111;
+    color:#fff;
+    padding:20px;
+  }
+  h1{text-align:center;color:yellow;}
+  h2{
+    background:green;
+    padding:8px;
+    border-radius:6px;
+    color:#fff;
+    margin-top:20px;
+  }
+  .item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:6px 0;
+    border-bottom:1px solid #444;
+  }
+  label{flex:1;}
+  select{padding:4px;border-radius:5px;margin-left:10px;width:100px;}
+  .buttons{margin-top:20px;display:flex;gap:10px;justify-content:center;}
+  button{
+    padding:10px 15px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    background:green;
+    color:white;
+    font-size:16px;
+  }
+  #customItemSection input, #customItemSection select{
+    padding:5px;
+    margin-right:5px;
+  }
+  #customItemSection button{background:orange;color:#000;}
+</style>
+</head>
+<body>
+
+<h1>🛒 ಆನ್‌ಲೈನ್ ಗ್ರೋಸರಿ ಅಂಗಡಿ (Online Grocery Store)</h1>
+
+<!-- User Input Section -->
+<h2>Add Custom Grocery Item</h2>
+<div id="customItemSection">
+  <input type="text" id="customItemName" placeholder="Item Name" style="width:200px;">
+  <select id="customItemType">
+    <option value="kg">KG</option>
+    <option value="liter">Liter</option>
+    <option value="qty">Quantity</option>
+  </select>
+  <select id="customItemCategory">
+    <option value="vegetables">Vegetables</option>
+    <option value="greenLeaves">Green Leaves</option>
+    <option value="fruits">Fruits</option>
+    <option value="staples">Staples</option>
+    <option value="dairy">Dairy</option>
+    <option value="dryFruits">Dry Fruits</option>
+    <option value="bakery">Bakery</option>
+    <option value="drinks">Drinks</option>
+    <option value="soaps">Soaps</option>
+    <option value="clothSoaps">Cloth Soaps</option>
+    <option value="soapPowders">Soap Powders</option>
+    <option value="shampoos">Shampoos</option>
+    <option value="facewash">Face Wash</option>
+  </select>
+  <button onclick="addCustomItem()">Add Item</button>
+</div>
+
+<!-- Grocery Sections -->
+<h2>ತರಕಾರಿಗಳು (Vegetables)</h2><div id="vegetables"></div>
+<h2>ಸೊಪ್ಪುಗಳು (Green Leaves)</h2><div id="greenLeaves"></div>
+<h2>ಹಣ್ಣುಗಳು (Fruits)</h2><div id="fruits"></div>
+<h2>ಅಕ್ಕಿ, ಧಾನ್ಯ & ಮಸಾಲೆಗಳು (Grains, Staples & Spices)</h2><div id="staples"></div>
+<h2>ಹಾಲು ಉತ್ಪನ್ನಗಳು (Dairy Products)</h2><div id="dairy"></div>
+<h2>ಒಣಹಣ್ಣುಗಳು (Dry Fruits)</h2><div id="dryFruits"></div>
+<h2>ಬೇಕರಿ ಐಟಂಗಳು (Bakery Items)</h2><div id="bakery"></div>
+<h2>ಪಾನೀಯಗಳು (Drinks)</h2><div id="drinks"></div>
+<h2>ಸಾಬೂನುಗಳು (Soaps)</h2><div id="soaps"></div>
+<h2>ಬಟ್ಟೆ ತೊಳೆಯುವ ಸಾಬೂನುಗಳು (Cloth Washing Soaps)</h2><div id="clothSoaps"></div>
+<h2>ಸಾಬೂನು ಪುಡಿ (Soap Powders)</h2><div id="soapPowders"></div>
+<h2>ಶಾಂಪುಗಳು (Shampoos)</h2><div id="shampoos"></div>
+<h2>ಫೇಸ್‌ವಾಶ್ (Face Wash)</h2><div id="facewash"></div>
+
+<!-- Buttons -->
+<div class="buttons">
+  <button onclick="sendWhatsApp()">📲 WhatsApp ಗೆ ಕಳುಹಿಸಿ</button>
+  <button onclick="downloadPDF()">📄 Save PDF</button>
+</div>
+
+<!-- jsPDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  // Grocery Lists
+  const vegetables=["ಬದನೇಕಾಯಿ (Brinjal)","ಈರುಳ್ಳಿ (Onion)","ಎಲೆಕೋಸು (Cabbage)","ಕುಂಬಳಕಾಯಿ (Pumpkin)","ಕ್ಯಾರೆಟ್ (Carrot)","ನವಿಲುಕೋಸು (Knolkhol)","ಸಿಹಿ ಗೆಣಸು (Sweet potato)","ಟೊಮಾಟೊ (Tomato)","ನುಗ್ಗೆಕಾಯಿ (Drumstick)","ಅಲಸಂದೆ (Kidney Beans)","ಬೆಳ್ಳುಳ್ಳಿ (Garlic)","ಬೆಂಡೆಕಾಯಿ (Ladies Finger)","ಬೀಟ್ರೂಟ್ (Beetroot)","ಹಸಿ ಮೆಣಸಿನಕಾಯಿ (Chilli)","ಹಾಗಲಕಾಯಿ (Bitter Gourd)","ಹೀರೇಕಾಯಿ (Ridge Gourd)","ಸೌತೆಕಾಯಿ (Cucumber)"];
+  const greenLeaves=["ಕೊತ್ತಂಬರಿ ಸೊಪ್ಪು (Coriander)","ಮೆಂತ್ಯ ಸೊಪ್ಪು (Fenugreek)","ಮೂಲಂಗಿ ಸೊಪ್ಪು (Radish Leaves)","ಸಬ್ಬಸಿಗೆ ಸೊಪ್ಪು (Dill)","ಹರಿವೆ ಸೊಪ್ಪು (Harive soppu)","ಪಾಲಕ ಸೊಪ್ಪು (Spinach)","ನುಗ್ಗೆಕಾಯಿ ಸೊಪ್ಪು (Drumstick Leaves)","ಕರಿಬೇವು (Curry Leaves)","ವೀಳ್ಯದೆಲೆ (Veelya-dele)"];
+  const fruits=["ಅನಾನಸ್ (Pineapple)","ಕಲ್ಲಂಗಡಿ (Watermelon)","ಕಿತ್ತಳೆ (Orange)","ದಾಳಿಂಬೆ (Pomegranate)","ದ್ರಾಕ್ಷಿ (Grapes)","ನಿಂಬೆ (Lemon)","ಪಪಾಯಿ (Papaya)","ಬಾಳೆಹಣ್ಣು (Banana)","ಬೆಲದ ಹಣ್ಣು (Wood Apple)","ಮಾವಿನ ಹಣ್ಣು (Mango)","ಮೂಸಂಬಿ (Sweet Lemon)","ಚಿಕ್ಕು (Sapota)","ಪೇರಳೆ (Guava)","ಸೇಬು (Apple)","ಹಲಸು (Jackfruit)","ಹುಣಸೆ (Tamarind)"];
+  const staples=["Rice (ಅಕ್ಕಿ)","Wheat (ಗೋಧಿ)","Ragi (ರಾಗಿ)","Jowar (ಜೋಳ)","Wheat Semolina (ರವೆ)","Maida Flour (ಮೈದಾ)","Rice Flour (ಅಕ್ಕಿ ಹಿಟ್ಟು)","Wheat Flour (ಗೋಧಿ ಹಿಟ್ಟು)","Ragi Flour (ರಾಗಿ ಹಿಟ್ಟು)","Gram Flour (ಕಡಲೆ ಹಿಟ್ಟು)","Jowar Flour (ಜೋಳ ಹಿಟ್ಟು)","Toor Dal (ತೊಗರಿ)","Bengal Gram (ಕಡಲೆ)","Moong Dal (ಹೆಸರು)","Urad Dal (ಉದ್ದಿನ ಬೇಳೆ)","Green Gram (ಹೆಸರು)","Chickpeas (ಕಡಲೆ)","Cumin Seeds (ಜೀರಿಗೆ)","Mustard Seeds (ಸಾಸಿವೆ)","Turmeric Powder (ಅರಿಶಿನ)","Red Chilli Powder (ಮೆಣಸಿನ ಪುಡಿ)","Coriander Seeds (ಕೊತ್ತಂಬರಿ)","Cardamom (ಏಲಕ್ಕಿ)","Clove (ಲವಂಗ)","Cinnamon (ದಾಲ್ಚಿನ್ನಿ)","Black Pepper (ಕರಿಮೆಣಸು)","Asafoetida (ಹಿಂಗು)","Fenugreek Seeds (ಮೆಂತ್ಯ)","Salt (ಉಪ್ಪು)","Sugar (ಸಕ್ಕರೆ)","Oil (ಎಣ್ಣೆ)","Puffed Rice (ಮುರಿ)","Poha (ಅವಲಕ್ಕಿ)","Groundnuts (ಕಡಲೆಕಾಯಿ)","Jaggery (ಬೆಲ್ಲ)","Tamarind (ಹುಣಸೆ)","Coconut (ತೆಂಗು)","Roasted Gram (ಹುರಿಗಡಲೆ)","Tea Powder (ಚಹಾ ಪುಡಿ)","Coffee Powder (ಕಾಫಿ ಪುಡಿ)","Puliyogare Powder (ಪುಲಿಯೋಗರೆ ಪುಡಿ)","Bisibele Bath Powder (ಬಿಸಿಬೇಳೆ ಬಾತ್ ಪುಡಿ)","Vangi Bath Powder (ವಾಂಗಿ ಬಾತ್ ಪುಡಿ)","Tomato Bath Powder (ಟೊಮೆಟೊ ಬಾತ್ ಪುಡಿ)","Ginger Garlic Paste (ಶುಂಠಿ ಬೆಳ್ಳುಳ್ಳಿ ಪೇಸ್ಟ್)","Rasam Powder (ರಸಂ ಪುಡಿ)","Chicken Masala (ಚಿಕನ್ ಮಸಾಲೆ)","Mutton Masala (ಮಟನ್ ಮಸಾಲೆ)","Egg Masala (ಮೊಟ್ಟೆ ಮಸಾಲೆ)","Garam Masala (ಗರಂ ಮಸಾಲೆ)","Chat Masala (ಚಾಟ್ ಮಸಾಲೆ)"];
+  const dairy=[{name:"ಹಾಲು (Milk)",type:"liter"},{name:"ಮೊಸರು (Curd)",type:"liter"},{name:"ಮಜ್ಜಿಗೆ (Buttermilk)",type:"liter"},{name:"ಬೆಣ್ಣೆ (Butter)",type:"kg"},{name:"ತುಪ್ಪ (Ghee)",type:"kg"},{name:"ಚೀಸ್ (Cheese)",type:"kg"},{name:"ಪನೀರ್ (Paneer)",type:"kg"},{name:"ಕ್ರೀಮ್ (Cream)",type:"kg"},{name:"ಐಸ್ ಕ್ರೀಮ್ (Ice Cream)",type:"kg"},{name:"ಹಾಲು ಪುಡಿ (Milk Powder)",type:"kg"}];
+  const dryFruits=["ಬಾದಾಮಿ (Almond)","ಗೋಡಂಬಿ (Cashew)","ದ್ರಾಕ್ಷಿ ಒಣ (Raisin)","ಪಿಸ್ತಾ (Pistachio)","ಅಕ್ಕರಕಾಯಿ (Walnut)","ಅಂಜೂರ (Fig)","ಖರ್ಜೂರ (Dates)"];
+  const bakery=["ಬ್ರೆಡ್ (Bread)","ಬನ್ (Bun)","ಕೇಕ್ (Cake)","ಬಿಸ್ಕತ್ (Biscuits)","ಪಫ್ (Puff)","ಟೋಸ್ಟ್ (Toast)","ಖಾರ ಬನ್ (Khara Bun)"];
+  const drinks=["ಚಹಾ (Tea)","ಕಾಫಿ (Coffee)","ಜ್ಯೂಸ್ (Juice)"];
+  const soaps=["ಮೈಸೂರು ಸ್ಯಾಂಡಲ್ ಸೋಪ್ (Mysore Sandal)","ಸಂತೂರ್ (Santoor)","ಪಿಯರ್ಸ್ (Pears)","ಲೈಫ್ಬಾಯ್ (Lifebuoy)"];
+  const clothSoaps=["ರಿನ್ (Rin)","ವೀಲ್ (Wheel)","ಟೈಡ್ (Tide)"];
+  const soapPowders=["ಸರ್ಫ್ ಎಕ್ಸೆಲ್ (Surf Excel)","ಅರಿಯಲ್ (Ariel)","ಟೈಡ್ (Tide)"];
+  const shampoos=["ಕ್ಲಿನಿಕ್ ಪ್ಲಸ್ (Clinic Plus)","ಚಿಕ್ (Chik)","ಸನ್ಸಿಲ್ಕ್ (Sunsilk)","ಡವ್ (Dove)"];
+  const facewash=["ಹಿಮಾಲಯ (Himalaya)","ಗಾರ್ನಿಯರ್ (Garnier)","ನಿವಿಯಾ (Nivea)"];
+
+  // Dropdowns
+  function kgDropdown(){ return `<select><option>1/4 KG</option><option>1/2 KG</option><option>1 KG</option><option>2 KG</option><option>5 KG</option></select>`;}
+  function literDropdown(){ return `<select><option>1/2 L</option><option>1 L</option><option>2 L</option><option>5 L</option></select>`;}
+  function qtyDropdown(){ let opt=""; for(let i=1;i<=10;i++) opt+=`<option>${i}</option>`; return `<select>${opt}</select>`;}
+
+  function renderList(id,items,type="kg"){ const div=document.getElementById(id); div.innerHTML=items.map(item=>{ 
+    if(typeof item==="object"){ 
+      return `<div class="item"><label><input type="checkbox"> ${item.name}</label>${item.type==="kg"?kgDropdown():literDropdown()}</div>`;} 
+    else { 
+      return `<div class="item"><label><input type="checkbox"> ${item}</label>${type==="kg"?kgDropdown():type==="qty"?qtyDropdown():""}</div>`;} }).join(""); }
+
+  // Render
+  renderList("vegetables",vegetables,"kg");
+  renderList("greenLeaves",greenLeaves,"qty");
+  renderList("fruits",fruits,"kg");
+  renderList("staples",staples,"kg");
+  renderList("dairy",dairy);
+  renderList("dryFruits",dryFruits,"kg");
+  renderList("bakery",bakery,"qty");
+  renderList("drinks",drinks,"qty");
+  renderList("soaps",soaps,"qty");
+  renderList("clothSoaps",clothSoaps,"qty");
+  renderList("soapPowders",soapPowders,"kg");
+  renderList("shampoos",shampoos,"qty");
+  renderList("facewash",facewash,"qty");
+
+  // Add Custom Item
+  function addCustomItem(){ 
+    const name=document.getElementById("customItemName").value.trim(); 
+    const type=document.getElementById("customItemType").value; 
+    const category=document.getElementById("customItemCategory").value; 
+    if(!name){ alert("Please enter an item name."); return; } 
+    const item=(type==="kg"||type==="liter")?{name,type}:name;
+    switch(category){
+      case "vegetables": vegetables.push(item); renderList("vegetables",vegetables,"kg"); break;
+      case "greenLeaves": greenLeaves.push(item); renderList("greenLeaves",greenLeaves,"qty"); break;
+      case "fruits": fruits.push(item); renderList("fruits",fruits,"kg"); break;
+      case "staples": staples.push(item); renderList("staples",staples,"kg"); break;
+      case "dairy": dairy.push(item); renderList("dairy",dairy); break;
+      case "dryFruits": dryFruits.push(item); renderList("dryFruits",dryFruits,"kg"); break;
+      case "bakery": bakery.push(item); renderList("bakery",bakery,"qty"); break;
+      case "drinks": drinks.push(item); renderList("drinks",drinks,"qty"); break;
+      case "soaps": soaps.push(item); renderList("soaps",soaps,"qty"); break;
+      case "clothSoaps": clothSoaps.push(item); renderList("clothSoaps",clothSoaps,"qty"); break;
+      case "soapPowders": soapPowders.push(item); renderList("soapPowders",soapPowders,"kg"); break;
+      case "shampoos": shampoos.push(item); renderList("shampoos",shampoos,"qty"); break;
+      case "facewash": facewash.push(item); renderList("facewash",facewash,"qty"); break;
+    }
+    document.getElementById("customItemName").value="";
+  }
+
+  // Collect items by category
+  function collectSelectedByCategory(){
+    const categories={
+      vegetables:{name:"ತರಕಾರಿಗಳು (Vegetables)",items:[]},
+      greenLeaves:{name:"ಸೊಪ್ಪುಗಳು (Green Leaves)",items:[]},
+      fruits:{name:"ಹಣ್ಣುಗಳು (Fruits)",items:[]},
+      staples:{name:"ಅಕ್ಕಿ, ಧಾನ್ಯ & ಮಸಾಲೆಗಳು (Staples)",items:[]},
+      dairy:{name:"ಹಾಲು ಉತ್ಪನ್ನಗಳು (Dairy Products)",items:[]},
+      dryFruits:{name:"ಒಣಹಣ್ಣುಗಳು (Dry Fruits)",items:[]},
+      bakery:{name:"ಬೇಕರಿ ಐಟಂಗಳು (Bakery Items)",items:[]},
+      drinks:{name:"ಪಾನೀಯಗಳು (Drinks)",items:[]},
+      soaps:{name:"ಸಾಬೂನುಗಳು (Soaps)",items:[]},
+      clothSoaps:{name:"ಬಟ್ಟೆ ತೊಳೆಯುವ ಸಾಬೂನುಗಳು (Cloth Washing Soaps)",items:[]},
+      soapPowders:{name:"ಸಾಬೂನು ಪುಡಿ (Soap Powders)",items:[]},
+      shampoos:{name:"ಶಾಂಪುಗಳು (Shampoos)",items:[]},
+      facewash:{name:"ಫೇಸ್‌ವಾಶ್ (Face Wash)",items:[]}
+    };
+    document.querySelectorAll(".item").forEach(i=>{
+      const checkbox=i.querySelector("input[type=checkbox]");
+      if(checkbox && checkbox.checked){
+        const name=i.querySelector("label").innerText.trim();
+        const qty=i.querySelector("select")?i.querySelector("select").value:"";
+        const parentId=i.parentElement.id;
+        if(categories[parentId]) categories[parentId].items.push(`- ${name} - ${qty}`);
+      }
+    });
+    return categories;
+  }
+
+  // WhatsApp Button
+  function sendWhatsApp(){
+    const categories=collectSelectedByCategory();
+    let msg="🛒 Grocery List:\n\n",hasItems=false;
+    for(const cat in categories){
+      if(categories[cat].items.length>0){
+        hasItems=true;
+        msg+=categories[cat].name+":\n"+categories[cat].items.join("\n")+"\n\n";
+      }
+    }
+    if(!hasItems){ alert("ಯಾವುದೂ ಆಯ್ಕೆ ಮಾಡಿಲ್ಲ (No items selected)"); return; }
+    window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");
+  }
+
+  // PDF Button
+  function downloadPDF(){
+    const { jsPDF } = window.jspdf;
+    const doc=new jsPDF();
+    doc.setFont("helvetica","normal"); doc.setFontSize(14); let y=20;
+    doc.text("🛒 Grocery List (ಗ್ರೋಸರಿ ಲಿಸ್ಟ್)",10,y); y+=10;
+    const categories=collectSelectedByCategory(); let hasItems=false;
+    for(const cat in categories){
+      if(categories[cat].items.length>0){
+        hasItems=true;
+        doc.text(categories[cat].name+":",10,y); y+=8;
+        categories[cat].items.forEach(item=>{
+          let lines=doc.splitTextToSize(item,180);
+          doc.text(lines,10,y); y+=lines.length*8;
+          if(y>270){ doc.addPage(); y=20; }
+        });
+        y+=4;
+      }
+    }
+    if(!hasItems) doc.text("ಯಾವುದೂ ಆಯ್ಕೆ ಮಾಡಿಲ್ಲ (No items selected)",10,y);
+    doc.save("grocery-list.pdf");
+  }
+</script>
+</body>
+</html>
